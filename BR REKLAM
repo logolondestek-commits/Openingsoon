@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BR Reklam Tabela & Açıkhava Reklamcılığı | Modern Vizyon</title>
+    
+    <!-- Google Fonts: Syne (Başlıklar) & Inter (Metinler) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Lenis (Smooth Scroll) -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.34/dist/lenis.min.js"></script>
+    
+    <!-- Tailwind Konfigürasyonu -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            orange: '#FF5E00', // Dinamik Turuncu
+                            black: '#0A0A0A',  // Derin Siyah
+                            white: '#FFFFFF',  // Saf Beyaz
+                            gray: '#F3F4F6'    // Açık Gri (Bölüm ayrıcı)
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Syne', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #FFFFFF; color: #0A0A0A; overflow-x: hidden; }
+        
+        /* Lenis Smooth Scroll zorunlu stilleri */
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+        .lenis.lenis-scrolling iframe { pointer-events: none; }
+
+        /* Özelleştirilmiş Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #FFFFFF; }
+        ::-webkit-scrollbar-thumb { background: #FF5E00; border-radius: 0; }
+        
+        /* Metin Konturu (Slider için) */
+        .text-stroke {
+            -webkit-text-stroke: 1.5px white;
+            color: transparent;
+        }
+
+        /* Dropdown Görünürlük Geçişi */
+        .dropdown-menu {
+            visibility: hidden;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .group:hover .dropdown-menu {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Scrollytelling Görsel Maskesi */
+        .image-mask {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-orange selection:text-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 px-6 py-5 flex justify-between items-center transition-all duration-300" id="navbar">
+        <!-- Logo -->
+        <a href="#" class="font-display font-bold text-2xl tracking-tight text-white mix-blend-difference z-10">
+            BR REKLAM<span class="text-brand-orange mix-blend-normal">.</span>
+        </a>
+
+        <!-- Menü Linkleri -->
+        <div class="hidden md:flex gap-10 items-center font-sans font-medium text-sm text-white mix-blend-difference z-10">
+            <a href="#" class="hover:text-brand-orange transition-colors">Anasayfa</a>
+            
+            <!-- Dropdown Menü (Keskin Kenarlar) -->
+            <div class="group relative py-2">
+                <button class="flex items-center gap-1 hover:text-brand-orange transition-colors uppercase tracking-wider">
+                    Hizmetler
+                    <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <!-- Dropdown İçeriği -->
+                <div class="dropdown-menu absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white shadow-2xl rounded-none overflow-hidden border border-gray-100">
+                    <div class="flex flex-col text-brand-black">
+                        <a href="#" class="px-5 py-3 hover:bg-brand-orange hover:text-white transition-colors">Kutu Harf Sistemleri</a>
+                        <a href="#" class="px-5 py-3 hover:bg-brand-orange hover:text-white transition-colors">Totem Tabelalar</a>
+                        <a href="#" class="px-5 py-3 hover:bg-brand-orange hover:text-white transition-colors">Dijital Ekran & LED</a>
+                        <a href="#" class="px-5 py-3 hover:bg-brand-orange hover:text-white transition-colors">Cephe Giydirme</a>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#" class="hover:text-brand-orange transition-colors uppercase tracking-wider">Projeler</a>
+            <a href="#" class="hover:text-brand-orange transition-colors uppercase tracking-wider">Hakkımızda</a>
+        </div>
+
+        <!-- CTA Buton (Keskin Kenarlar) -->
+        <a href="#" class="hidden md:inline-block bg-brand-orange text-white px-8 py-3 rounded-none text-sm font-semibold tracking-wide hover:bg-black transition-colors z-10 shadow-lg shadow-brand-orange/30">
+            Teklif İste
+        </a>
+    </nav>
+
+    <!-- Hero Slider -->
+    <section class="relative h-screen w-full overflow-hidden bg-brand-black" id="hero">
+        
+        <!-- Slaytlar Container -->
+        <div class="w-full h-full relative" id="slider-container">
+            
+            <!-- Slayt 1 -->
+            <div class="slide absolute inset-0 w-full h-full opacity-100 z-10">
+                <div class="absolute inset-0 bg-black/40 z-10"></div>
+                <img src="https://images.unsplash.com/photo-1542451313056-b7c8e626645f?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover" alt="Tabela">
+                <div class="absolute inset-0 z-20 flex flex-col justify-center px-8 md:px-24">
+                    <h1 class="font-display text-5xl md:text-[7vw] font-bold text-white leading-[1.1] tracking-tight">
+                        ŞEHRİN<br><span class="text-stroke">PARLAYAN</span> YÜZÜ
+                    </h1>
+                    <p class="mt-6 text-gray-200 text-lg max-w-xl font-sans font-light">Modern mimariye uyumlu, dikkat çekici ve uzun ömürlü açıkhava reklam çözümleri.</p>
+                </div>
+            </div>
+
+            <!-- Slayt 2 -->
+            <div class="slide absolute inset-0 w-full h-full opacity-0 z-0">
+                <div class="absolute inset-0 bg-black/50 z-10"></div>
+                <img src="https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2029&auto=format&fit=crop" class="w-full h-full object-cover" alt="Neon">
+                <div class="absolute inset-0 z-20 flex flex-col justify-center px-8 md:px-24">
+                    <h1 class="font-display text-5xl md:text-[7vw] font-bold text-white leading-[1.1] tracking-tight">
+                        DİNAMİK<br><span class="text-brand-orange">DİJİTAL</span> EKRANLAR
+                    </h1>
+                    <p class="mt-6 text-gray-200 text-lg max-w-xl font-sans font-light">Yüksek çözünürlüklü LED sistemlerle markanızın mesajını gündüz ve gece kitlelere ulaştırın.</p>
+                </div>
+            </div>
+
+            <!-- Slayt 3 -->
+            <div class="slide absolute inset-0 w-full h-full opacity-0 z-0">
+                <div class="absolute inset-0 bg-black/40 z-10"></div>
+                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover" alt="Bina">
+                <div class="absolute inset-0 z-20 flex flex-col justify-center px-8 md:px-24">
+                    <h1 class="font-display text-5xl md:text-[7vw] font-bold text-white leading-[1.1] tracking-tight">
+                        <span class="text-stroke">DEVASA</span><br>TOTEM SİSTEMLER
+                    </h1>
+                    <p class="mt-6 text-gray-200 text-lg max-w-xl font-sans font-light">Kilometrelerce öteden fark edilen, mühendislik harikası anıtsal tabela projeleri.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Slider Kontrolleri (Keskin Kenarlar) -->
+        <div class="absolute bottom-10 left-8 md:left-24 z-30 flex items-center gap-6">
+            <div class="flex gap-2">
+                <button id="prevBtn" class="w-12 h-12 rounded-none border border-white/30 text-white flex items-center justify-center hover:bg-brand-orange hover:border-brand-orange transition-all backdrop-blur-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <button id="nextBtn" class="w-12 h-12 rounded-none border border-white/30 text-white flex items-center justify-center hover:bg-brand-orange hover:border-brand-orange transition-all backdrop-blur-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+            <!-- Pagination İndikatörleri (Endüstriyel Dikdörtgen Tasarım) -->
+            <div class="hidden md:flex gap-2 items-center slider-dots">
+                <div class="dot w-8 h-2 bg-brand-orange rounded-none cursor-pointer transition-all"></div>
+                <div class="dot w-3 h-2 bg-white/50 rounded-none cursor-pointer transition-all"></div>
+                <div class="dot w-3 h-2 bg-white/50 rounded-none cursor-pointer transition-all"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tanıtım Bölümü -->
+    <section class="py-24 px-8 md:px-24 bg-white text-brand-black">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
+            <h2 class="font-display text-4xl md:text-5xl font-bold leading-tight md:w-1/2">
+                Markanızı Sıradanlığın <span class="text-brand-orange">Dışına</span> Taşıyoruz.
+            </h2>
+            <div class="md:w-1/2">
+                <p class="text-gray-600 text-lg font-light leading-relaxed mb-8">
+                    Tasarım masasından montaj anına kadar her aşamada kaliteyi ve estetiği merkeze alıyoruz. Modern dünyanın görsel karmaşasında, markanızın net ve güçlü bir duruş sergilemesi için endüstriyel çözümler üretiyoruz.
+                </p>
+                <a href="#" class="inline-flex items-center gap-2 font-semibold text-brand-black hover:text-brand-orange transition-colors uppercase tracking-widest text-sm border-b-2 border-brand-orange pb-1">
+                    Hakkımızda Daha Fazla <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scrollytelling Bölümü -->
+    <section id="scrolly-section" class="relative bg-brand-gray h-[400vh]">
+        <div class="sticky top-0 h-screen w-full flex flex-col md:flex-row overflow-hidden">
+            
+            <div class="w-full md:w-1/2 h-full flex items-center justify-center px-8 md:px-24 relative bg-white z-10">
+                <div class="step-text absolute w-full px-8 md:px-24 left-0">
+                    <span class="text-brand-orange font-bold font-display text-xl mb-4 block">01 / Üretim Öncesi</span>
+                    <h3 class="font-display text-4xl md:text-5xl font-bold mb-6 text-brand-black">Tasarım & Mimari</h3>
+                    <p class="text-gray-600 text-lg">Alanında uzman endüstriyel tasarımcılarımız, markanızın kurumsal kimliğine ve uygulanacak cephenin mimarisine en uygun konsepti 3D modelleyerek sizlere sunar.</p>
+                </div>
+                
+                <div class="step-text absolute w-full px-8 md:px-24 left-0 opacity-0 translate-y-10">
+                    <span class="text-brand-orange font-bold font-display text-xl mb-4 block">02 / CNC & Lazer</span>
+                    <h3 class="font-display text-4xl md:text-5xl font-bold mb-6 text-brand-black">Hassas Üretim</h3>
+                    <p class="text-gray-600 text-lg">Seçilen premium materyaller (Alüminyum, pleksiglas, paslanmaz), milimetrik hata payı ile lazer ve CNC makinalarımızda işlenerek forma kavuşur.</p>
+                </div>
+
+                <div class="step-text absolute w-full px-8 md:px-24 left-0 opacity-0 translate-y-10">
+                    <span class="text-brand-orange font-bold font-display text-xl mb-4 block">03 / Entegrasyon</span>
+                    <h3 class="font-display text-4xl md:text-5xl font-bold mb-6 text-brand-black">Montaj & Teslimat</h3>
+                    <p class="text-gray-600 text-lg">Eğitimli teknik ekibimiz, en zorlu şantiye ve hava koşullarında bile iş güvenliği standartlarından taviz vermeden montajı kusursuzca tamamlar.</p>
+                </div>
+            </div>
+            
+            <div class="w-full md:w-1/2 h-[50vh] md:h-full relative overflow-hidden bg-brand-black">
+                <div class="step-img absolute inset-0 image-mask z-30">
+                    <img src="https://images.unsplash.com/photo-1581092921461-eab62e97a780?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover" alt="Tasarım">
+                </div>
+                <div class="step-img absolute inset-0 image-mask z-20">
+                    <img src="https://images.unsplash.com/photo-1620121692029-d088224ddc74?q=80&w=2032&auto=format&fit=crop" class="w-full h-full object-cover" alt="Üretim">
+                </div>
+                <div class="step-img absolute inset-0 image-mask z-10">
+                    <img src="https://images.unsplash.com/photo-1541888018146-21b3338bf3b8?q=80&w=2074&auto=format&fit=crop" class="w-full h-full object-cover" alt="Montaj">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hızlı İletişim / Banner (Keskin Kenarlar) -->
+    <section class="bg-brand-orange py-24 px-8 text-center">
+        <h2 class="font-display text-4xl md:text-6xl font-bold text-white mb-8">Projeye Başlamaya Hazır mısınız?</h2>
+        <p class="text-white/90 text-lg mb-10 font-sans max-w-2xl mx-auto">Markanızı görünür kılmak için hemen uzman ekibimizle iletişime geçin. Size özel çözümler sunalım.</p>
+        <a href="#" class="inline-block bg-brand-black text-white px-12 py-4 rounded-none text-lg font-bold hover:bg-white hover:text-brand-black transition-colors shadow-2xl">
+            Bize Ulaşın
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-black text-white pt-20 pb-10 px-8 md:px-24">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-white/10 pb-16">
+            <div class="md:col-span-1">
+                <a href="#" class="font-display font-bold text-3xl tracking-tight text-white mb-6 block">
+                    BR REKLAM<span class="text-brand-orange">.</span>
+                </a>
+                <p class="text-gray-400 font-light text-sm">Türkiye'nin lider endüstriyel açıkhava reklamcılığı ve tabela sistemleri üreticisi.</p>
+            </div>
+            <div>
+                <h4 class="font-display font-bold text-lg mb-6">Hizmetler</h4>
+                <ul class="space-y-3 text-gray-400 font-light text-sm">
+                    <li><a href="#" class="hover:text-brand-orange transition-colors">Işıklı Kutu Harfler</a></li>
+                    <li><a href="#" class="hover:text-brand-orange transition-colors">Totem ve Pilon Sistemler</a></li>
+                    <li><a href="#" class="hover:text-brand-orange transition-colors">Yönlendirme Tabelaları</a></li>
+                    <li><a href="#" class="hover:text-brand-orange transition-colors">Dijital LED Ekranlar</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-display font-bold text-lg mb-6">Kurumsal</h4>
+                <ul class="space-y-3 text-gray-400 font-light text-sm">
+                    <li><a href="#" class="hover:text-brand-orange transition-colors">Hakkımızda</a></li>
+                    <li><a href="#" class="hover:text-brand-orange transition-colors">Projelerimiz</a></li>
+                    <li><a href="#" class="hover:text-brand-orange transition-colors">Kariyer</a></li>
+                    <li><a href="#" class="hover:text-brand-orange transition-colors">İletişim</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-display font-bold text-lg mb-6">İletişim</h4>
+                <ul class="space-y-3 text-gray-400 font-light text-sm">
+                    <li> Yaylacık mahallesi</li>
+                    <li>Bursa / Nilüfer</li>
+                    <li class="pt-4"><a href="info@brreklam.com" class="text-brand-orange font-semibold text-base">info@brreklam.com</a></li>
+                    <li><a href="tel:+90 538 624 27 46 " class="text-white hover:text-brand-orange transition-colors">+90 538 624 27 46 </a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center pt-8 text-xs text-gray-500 font-light">
+            <p>© 2026 BR Reklamcılık A.Ş. Tüm hakları saklıdır.</p>
+            <div class="flex gap-4 mt-4 md:mt-0">
+                <a href="#" class="hover:text-white transition-colors">Gizlilik Politikası</a>
+                <a href="#" class="hover:text-white transition-colors">KVKK</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            /* =========================================
+               0. LENIS SMOOTH SCROLL KURULUMU
+               ========================================= */
+            const lenis = new Lenis({
+                duration: 1.2,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                smooth: true,
+                direction: 'vertical',
+            });
+
+            // GSAP ScrollTrigger'ı Lenis ile senkronize et
+            lenis.on('scroll', ScrollTrigger.update);
+
+            gsap.ticker.add((time) => {
+                lenis.raf(time * 1000);
+            });
+            gsap.ticker.lagSmoothing(0);
+
+            /* =========================================
+               1. HERO SLIDER KODLARI
+               ========================================= */
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            let currentSlide = 0;
+            let isAnimating = false;
+            let slideInterval;
+
+            function goToSlide(index) {
+                if (isAnimating || index === currentSlide) return;
+                isAnimating = true;
+
+                const outgoing = slides[currentSlide];
+                const incoming = slides[index];
+
+                gsap.set(incoming, { zIndex: 10 });
+                gsap.set(outgoing, { zIndex: 5 });
+
+                const incomingTitle = incoming.querySelector('h1');
+                const incomingText = incoming.querySelector('p');
+
+                const tl = gsap.timeline({
+                    onComplete: () => {
+                        gsap.set(outgoing, { opacity: 0 });
+                        currentSlide = index;
+                        isAnimating = false;
+                        updateDots();
+                    }
+                });
+
+                tl.fromTo(incoming, 
+                    { opacity: 0 }, 
+                    { opacity: 1, duration: 1, ease: "power2.inOut" }
+                );
+
+                tl.fromTo([incomingTitle, incomingText], 
+                    { y: 50, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power3.out" },
+                    "-=0.5"
+                );
+            }
+
+            function nextSlide() {
+                let next = (currentSlide + 1) % slides.length;
+                goToSlide(next);
+                resetInterval();
+            }
+
+            function prevSlide() {
+                let prev = (currentSlide - 1 + slides.length) % slides.length;
+                goToSlide(prev);
+                resetInterval();
+            }
+
+            function updateDots() {
+                dots.forEach((dot, idx) => {
+                    if(idx === currentSlide) {
+                        gsap.to(dot, { width: 32, backgroundColor: '#FF5E00', duration: 0.3 });
+                    } else {
+                        gsap.to(dot, { width: 12, backgroundColor: 'rgba(255,255,255,0.5)', duration: 0.3 });
+                    }
+                });
+            }
+
+            function resetInterval() {
+                clearInterval(slideInterval);
+                slideInterval = setInterval(nextSlide, 5000);
+            }
+
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+            dots.forEach((dot, idx) => {
+                dot.addEventListener('click', () => { goToSlide(idx); resetInterval(); });
+            });
+
+            gsap.fromTo([slides[0].querySelector('h1'), slides[0].querySelector('p')], 
+                { y: 50, opacity: 0 }, 
+                { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out", delay: 0.5 }
+            );
+            slideInterval = setInterval(nextSlide, 5000);
+
+            /* =========================================
+               2. SCROLLYTELLING KODLARI
+               ========================================= */
+            const section = document.getElementById('scrolly-section');
+            const stepTexts = gsap.utils.toArray('.step-text');
+            const stepImgs = gsap.utils.toArray('.step-img');
+
+            ScrollTrigger.create({
+                trigger: section,
+                start: "top top",
+                end: "bottom bottom",
+                pin: ".sticky", 
+                scrub: true
+            });
+
+            const tl1 = gsap.timeline({
+                scrollTrigger: {
+                    trigger: section,
+                    start: "10% top",
+                    end: "40% top",
+                    scrub: 1
+                }
+            });
+            tl1.to(stepTexts[0], { opacity: 0, y: -20, duration: 1 })
+               .to(stepTexts[1], { opacity: 1, y: 0, duration: 1 }, "<")
+               .to(stepImgs[0], { clipPath: "polygon(0 0, 100% 0, 100% 0%, 0 0%)", duration: 1 }, "<");
+
+
+            const tl2 = gsap.timeline({
+                scrollTrigger: {
+                    trigger: section,
+                    start: "50% top",
+                    end: "80% top",
+                    scrub: 1
+                }
+            });
+            tl2.to(stepTexts[1], { opacity: 0, y: -20, duration: 1 })
+               .to(stepTexts[2], { opacity: 1, y: 0, duration: 1 }, "<")
+               .to(stepImgs[1], { clipPath: "polygon(0 0, 100% 0, 100% 0%, 0 0%)", duration: 1 }, "<");
+
+            /* =========================================
+               3. NAVBAR SCROLL EFEKTİ
+               ========================================= */
+            window.addEventListener('scroll', () => {
+                const nav = document.getElementById('navbar');
+                if (window.scrollY > 50) {
+                    nav.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-3');
+                    nav.classList.remove('py-5');
+                    nav.querySelectorAll('.mix-blend-difference').forEach(el => {
+                        el.classList.remove('mix-blend-difference', 'text-white');
+                        el.classList.add('text-brand-black');
+                    });
+                } else {
+                    nav.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-3');
+                    nav.classList.add('py-5');
+                    nav.querySelectorAll('.text-brand-black').forEach(el => {
+                        el.classList.add('mix-blend-difference', 'text-white');
+                        el.classList.remove('text-brand-black');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
